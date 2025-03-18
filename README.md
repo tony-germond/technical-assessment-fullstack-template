@@ -1,66 +1,127 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# FullStack Dev technical assessement
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+## Overview
+The goal of this technical assessment is to create a simple yet complete web App with geographical data.
 
-## About Laravel
+## Requirements
+- PHP 8.3+
+- Composer 2.7.1+
+- SQLite
+- NodeJS 10.11.1+
+- npm 10.2.4+
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+## Installation
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+### 1. Install dependencies
+```bash
+composer install
+npm install
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+```
 
-## Learning Laravel
+### 2. Environment Setup
+```bash
+cp .env.example .env
+php artisan key:generate
+```
+Edit the `.env` file to configure your database connection.
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+### 4. Database Setup
+```bash
+php artisan migrate
+```
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+### 5. Start the local development server
+```bash
+composer run dev
+```
+The application will be available at `http://localhost:8000`.
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+## Usage
+Provide examples of how to use your application or its key features.
+The application include the package inertia, this mean the front-end side of 
+the web app works with vue3Js and TailwindCSS : https://jetstream.laravel.com/introduction.html. 
 
-## Laravel Sponsors
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+## Goal of the exercice
+Edit the provided code to create an app allowing sensors 
 
-### Premium Partners
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[WebReinvent](https://webreinvent.com/)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Jump24](https://jump24.co.uk)**
-- **[Redberry](https://redberry.international/laravel/)**
-- **[Active Logic](https://activelogic.com)**
-- **[byte5](https://byte5.de)**
-- **[OP.GG](https://op.gg)**
+### 
+1. Location Management System
 
-## Contributing
+Create a Location model
+Set up appropriate relationships between the Location model and the User model
+Implement any necessary accessors or mutators following, you'll find below a class diagramm of DB entities.
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+![alt text](image.png)
 
-## Code of Conduct
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+2. Leaflet.js Map Integration
 
-## Security Vulnerabilities
+Create an Inertia page that displays a map using Leaflet.js
+Display all locations as markers on the map
+When a marker is clicked, show a popup with the location name and description
+Implement a form to add new locations by clicking on the map or entering coordinates manually
+Add filters to show locations by category
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+3. Authorization Policies
 
-## License
+Implement the following authorization rules using Laravel Policies and Gates:
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+All authenticated users can view all locations
+Users can only edit or delete locations they created
+Create an Admin role that can manage all locations
+Implement a "featured" status for locations that only admins can toggle
+
+Policy Implementation Requirements
+
+Create a LocationPolicy class
+Register appropriate Gates in the AuthServiceProvider
+Use the policies in your controllers and Inertia components
+Make sure the UI reflects these permissions (hide edit buttons for unauthorized users, etc.)
+
+4. User Interface
+
+Create a dashboard page that lists all locations in a table view
+Implement CRUD operations for locations
+Use Jetstream components where appropriate
+Make the interface responsive
+
+5. Bonus Tasks (Optional)
+
+Implement real-time updates when a new location is added (using Laravel Echo)
+Add location clustering for the map when there are many markers in the same area
+Implement a search functionality to find locations by name or description
+Add the ability to upload and display an image for each location
+
+Evaluation Criteria
+
+Code organization and structure
+Proper use of Laravel Jetstream and Inertia.js
+Correct implementation of authorization policies and gates
+Correct use of laravel resources when needed
+Proper integration of Leaflet.js
+User interface design and responsiveness
+Error handling and validation
+Code documentation and comments
+
+Submission
+
+Create a new branch with your name (e.g., john-doe)
+Make your changes and commit them to your branch
+Push your branch to the repository
+Create a pull request from your branch to the main branch
+
+
+
+## API Documentation
+If your project includes an API, provide a swagger documentation.
+
+
+## Testing
+```bash
+php artisan test
+```
+
+## Troubleshooting
