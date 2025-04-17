@@ -105,10 +105,8 @@ Code documentation and comments
 
 ### Submission
 
-Create a new branch with your name (e.g., john-doe)
-Make your changes and commit them to your branch
-Push your branch to the repository
-Create a pull request from your branch to the main branch
+
+Make your changes and commit them on your repository
 
 
 
