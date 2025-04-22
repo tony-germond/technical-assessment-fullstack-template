@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Location extends Model
 {
+    /** @use HasFactory<\Database\Factories\LocationFactory> */
     use HasFactory;
 
     /**
@@ -23,16 +24,6 @@ class Location extends Model
         'is_featured',
         'latitude',
         'longitude',
-    ];
-
-    /**
-     * The attributes that should be cast.
-     *
-     * @var array<string, string>
-     */
-    protected $casts = [
-        'latitude' => 'decimal:8',
-        'longitude' => 'decimal:8',
     ];
 
     /**
