@@ -1,9 +1,9 @@
 <script setup>
-import { onMounted, ref } from 'vue';
+import {onMounted, ref, watch} from 'vue';
 import 'leaflet/dist/leaflet.css';
 import L from 'leaflet';
 import AppLayout from "@/Layouts/AppLayout.vue";
-import {useForm} from "@inertiajs/vue3";
+import {router, useForm} from "@inertiajs/vue3";
 import InputLabel from "@/Components/InputLabel.vue";
 import TextInput from "@/Components/TextInput.vue";
 import InputError from "@/Components/InputError.vue";
@@ -29,19 +29,43 @@ const categories = [
   { id: 'Fleuve', name: 'Fleuve' },
 ];
 
+var map
+const selectedCategory = ref(props.filters?.category || '');
+
+// Observer les changements du filtre et mettre à jour l'URL
+watch(selectedCategory, (value) => {
+  router.get(
+      route('locations.index'),
+      value ? { category: value } : {},
+      {
+        preserveState: true,
+        replace: true
+      }
+  );
+});
+
+
+watch(() => props.locations, (locations) => {
+  map.eachLayer((layer) => {
+    if (layer instanceof L.Marker) {
+      layer.remove();
+    }
+  });
+  props.locations.forEach((value,index) => {
+    var marker = L.marker([value.latitude,value.longitude]).addTo(map)
+    marker.bindPopup("<b>Name :"+value.name+"</b></br></b> Description:"+value.description+"</b>")
+  })
+}, );
 
 onMounted(() => {
-  var map = L.map('map').setView([43.609169, 1.381720], 2);
+  map = L.map('map').setView([43.609169, 1.381720], 2);
 
   L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
     maxZoom: 19,
     attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
   }).addTo(map);
 
-  props.locations.forEach((value,index) => {
-    var marker = L.marker([value.latitude,value.longitude]).addTo(map)
-    marker.bindPopup("<b>Name :"+value.name+"</b></br></b> Description:"+value.description+"</b>")
-  })
+
   function onMapClick(e) {
     form.latitude = e.latlng.lat
     form.longitude = e.latlng.lng
@@ -73,6 +97,19 @@ const createLocation = () => {
         Location
       </h2>
     </template>
+
+    <div>
+      <select
+          v-model="selectedCategory"
+          class="border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm"
+      >
+        <option value="">Filter category</option>
+        <option v-for="category in categories" :key="category.id" :value="category.id">
+          {{ category.name }}
+        </option>
+      </select>
+    </div>
+
 
     <div class="py-12">
       <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
