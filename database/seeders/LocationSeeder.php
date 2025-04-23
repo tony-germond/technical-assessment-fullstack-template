@@ -23,10 +23,12 @@ class LocationSeeder extends Seeder
 
         }
 
-        // Generate locations for each teams
+
         foreach ($teams as $team) {
+            //Generate admin and user for each team
             $team->users()->attach(User::factory()->withPersonalTeam()->create(), ['role' => 'admin']);
             $team->users()->attach(User::factory()->withPersonalTeam()->create(), ['role' => 'member']);
+            // Generate locations for each teams
             Location::factory(5)
                 ->for($team)
                 ->create();

@@ -20,6 +20,7 @@ class AuthServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        //Get to check if user is admin
         Gate::define('admin', function ($user) {
             return $user->hasTeamRole($user->currentTeam(),'admin');
         });

@@ -9,12 +9,19 @@ import TextInput from "@/Components/TextInput.vue";
 import InputError from "@/Components/InputError.vue";
 import PrimaryButton from "@/Components/PrimaryButton.vue";
 
+/**
+ * Props from backend
+ */
 const props = defineProps({
   locations: {
     type: Array,
   }
 });
 
+/**
+ * Initial state of create form
+ * @type {InertiaForm<{name: string, description: string, category: string, latitude: string, longitude: string}>}
+ */
 const form = useForm({
   name :'',
   description :'',
@@ -23,16 +30,25 @@ const form = useForm({
   longitude:''
 })
 
+/**
+ * Categories used for filter and form
+  * @type {[{id: string, name: string},{id: string, name: string},{id: string, name: string}]}
+ */
 const categories = [
   { id: 'Rivière', name: 'Rivière' },
   { id: 'Ruisseau', name: 'Ruisseau' },
   { id: 'Fleuve', name: 'Fleuve' },
 ];
 
-var map
-const selectedCategory = ref(props.filters?.category || '');
 
-// Observer les changements du filtre et mettre à jour l'URL
+var map
+const selectedCategory = '';
+
+// -- Watchers --
+
+/**
+ * Categories filter
+ */
 watch(selectedCategory, (value) => {
   router.get(
       route('locations.index'),
@@ -40,18 +56,24 @@ watch(selectedCategory, (value) => {
   );
 });
 
+/**
+ * Locations watch to remove all and add the news
+  */
 watch(() => props.locations, (locations) => {
   map.eachLayer((layer) => {
     if (layer instanceof L.Marker) {
       layer.remove();
     }
   });
-  locations.forEach((value,index) => {
+  locations.forEach((value) => {
     var marker = L.marker([value.latitude,value.longitude]).addTo(map)
     marker.bindPopup("<b>Name :"+value.name+"</b></br></b> Description:"+value.description+"</b>")
   })
 }, );
 
+/**
+ * Initialize map onMounted, else component is not found
+  */
 onMounted(() => {
   map = L.map('map').setView([43.609169, 1.381720], 2);
 
@@ -61,7 +83,10 @@ onMounted(() => {
   }).addTo(map);
 
 
-  props.locations.forEach((value,index) => {
+  props.locations.forEach((value) => {
+    /**
+     * Create popup for eachmarker
+     */
     var marker = L.marker([value.latitude,value.longitude]).addTo(map)
     marker.bindPopup("<b>Name :"+value.name+"</b></br></b> Description:"+value.description+"</b>")
   })
@@ -72,6 +97,9 @@ onMounted(() => {
   map.on('click', onMapClick)
 });
 
+/**
+ * Form submit
+  */
 const createLocation = () => {
   form.post(route('locations.store'), {
     onSuccess: () => {
@@ -97,6 +125,7 @@ const createLocation = () => {
       </h2>
     </template>
 
+    <!-- Filter for categories -->
     <div class="mt-2 ml-2">
       <select
           v-model="selectedCategory"
@@ -109,7 +138,7 @@ const createLocation = () => {
       </select>
     </div>
 
-
+    <!-- Map -->
     <div class="py-12">
       <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
         <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg">
@@ -118,7 +147,7 @@ const createLocation = () => {
       </div>
     </div>
 
-
+    <!-- Add location -->
     <div class="py-2">
       <div class="md:w-1/3 mx-auto sm:px-6 lg:px-8">
         <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg">

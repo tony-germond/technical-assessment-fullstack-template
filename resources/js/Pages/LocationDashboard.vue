@@ -2,6 +2,9 @@
 import AppLayout from "@/Layouts/AppLayout.vue";
 import {router} from "@inertiajs/vue3";
 
+/**
+ * Get location and if user is authorized from back
+  */
 const props = defineProps({
   locations: {
     type: Array,
@@ -11,6 +14,10 @@ const props = defineProps({
   }
 });
 
+/**
+ * Delete location, use a confirm box to be sure
+ * @param locationId
+ */
 const deleteLocation = (locationId) => {
   if (confirm("Confirm ?")) {
     router.delete(route('locations.delete', { location: locationId }));
@@ -25,6 +32,7 @@ const deleteLocation = (locationId) => {
       </h2>
     </template>
 
+    <!-- Location table -->
     <div class="locations-container">
       <h2>Liste des Locations</h2>
 
