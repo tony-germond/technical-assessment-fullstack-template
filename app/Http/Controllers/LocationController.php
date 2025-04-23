@@ -14,12 +14,8 @@ class LocationController extends Controller
 
         $category = $request->input('category');
 
-        $locations = Location::when($category, function($query, $category){
-            $query->where('category', $category);
-        })->get();
-
         return Inertia::render('Location',[
-            'locations' => $locations,
+            'locations' => $category ?  Location::where('category', $category)->get() : Location::all(),
         ]);
     }
 
@@ -42,5 +38,12 @@ class LocationController extends Controller
         $location->save();
 
         return to_route('locations.index');
+    }
+
+    public function destroy(Location $location)
+    {
+        $location->delete();
+
+        return to_route('locationsdashboard.index');
     }
 }

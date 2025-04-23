@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\LocationController;
+use App\Http\Controllers\LocationDashboardController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -23,5 +24,7 @@ Route::middleware([
         return Inertia::render('Dashboard');
     })->name('dashboard');
     Route::get('/locations', [LocationController::class,'index'])->name('locations.index');
+    Route::get('/locationsdashboard', [LocationDashboardController::class,'index'])->name('locationsdashboard.index');
     Route::post('/locations', [LocationController::class, 'store'])->name('locations.store');
+    Route::delete('/locations/{location}', [LocationController::class, 'destroy'])->name('locations.delete');
 });

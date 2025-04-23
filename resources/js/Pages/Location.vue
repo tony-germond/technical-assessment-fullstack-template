@@ -37,13 +37,8 @@ watch(selectedCategory, (value) => {
   router.get(
       route('locations.index'),
       value ? { category: value } : {},
-      {
-        preserveState: true,
-        replace: true
-      }
   );
 });
-
 
 watch(() => props.locations, (locations) => {
   map.eachLayer((layer) => {
@@ -51,7 +46,7 @@ watch(() => props.locations, (locations) => {
       layer.remove();
     }
   });
-  props.locations.forEach((value,index) => {
+  locations.forEach((value,index) => {
     var marker = L.marker([value.latitude,value.longitude]).addTo(map)
     marker.bindPopup("<b>Name :"+value.name+"</b></br></b> Description:"+value.description+"</b>")
   })
@@ -66,6 +61,10 @@ onMounted(() => {
   }).addTo(map);
 
 
+  props.locations.forEach((value,index) => {
+    var marker = L.marker([value.latitude,value.longitude]).addTo(map)
+    marker.bindPopup("<b>Name :"+value.name+"</b></br></b> Description:"+value.description+"</b>")
+  })
   function onMapClick(e) {
     form.latitude = e.latlng.lat
     form.longitude = e.latlng.lng
@@ -98,7 +97,7 @@ const createLocation = () => {
       </h2>
     </template>
 
-    <div>
+    <div class="mt-2 ml-2">
       <select
           v-model="selectedCategory"
           class="border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm"
@@ -120,11 +119,12 @@ const createLocation = () => {
     </div>
 
 
-    <div class="py-12">
-      <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+    <div class="py-2">
+      <div class="md:w-1/3 mx-auto sm:px-6 lg:px-8">
         <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg">
-          <h1> Add location </h1>
+          <div class="flex justify-center">
             <form @submit.prevent="createLocation">
+              <h1> Add location </h1>
               <div>
                 <InputLabel for="name" value="Name" />
                 <TextInput id="name" v-model="form.name" type="text" required />
@@ -172,7 +172,8 @@ const createLocation = () => {
               </div>
               <PrimaryButton>Save</PrimaryButton>
             </form>
-        </div>
+          </div>
+          </div>
       </div>
     </div>
   </AppLayout>

@@ -1,0 +1,201 @@
+openapi: 3.1.0
+info:
+  title: API de Gestion des Locations
+  description: API permettant de gérer les locations (rivières, ruisseaux, fleuves)
+  version: 1.0.0
+
+servers:
+  - url: /localhost
+    description: Localhost
+
+paths:
+  /locations:
+    get:
+      tags:
+        - Locations
+      summary: Récupérer toutes les locations
+      description: Retourne une liste de toutes les locations, avec possibilité de filtrer par catégorie
+      operationId: getLocations
+      parameters:
+        - name: category
+          in: query
+          description: Filtre les locations par catégorie (Rivière, Ruisseau, Fleuve)
+          required: false
+          schema:
+            type: string
+            enum: [Rivière, Ruisseau, Fleuve]
+      responses:
+        '200':
+          description: Opération réussie
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Location'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+    
+    post:
+      tags:
+        - Locations
+      summary: Créer une nouvelle location
+      description: Crée une nouvelle location appartenant à l'équipe actuelle de l'utilisateur authentifié
+      operationId: storeLocation
+      requestBody:
+        description: Objet location à créer
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - name
+                - description
+                - category
+                - latitude
+                - longitude
+              properties:
+                name:
+                  type: string
+                  maxLength: 255
+                  example: "Seine"
+                description:
+                  type: string
+                  example: "Fleuve traversant Paris"
+                category:
+                  type: string
+                  enum: [Rivière, Ruisseau, Fleuve]
+                  example: "Fleuve"
+                latitude:
+                  type: number
+                  format: float
+                  minimum: -90
+                  maximum: 90
+                  example: 48.8566
+                longitude:
+                  type: number
+                  format: float
+                  minimum: -180
+                  maximum: 180
+                  example: 2.3522
+                is_featured:
+                  type: boolean
+                  default: false
+                  example: true
+      responses:
+        '302':
+          description: Redirection vers la page d'index des locations
+        '422':
+          description: Données de validation invalides
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+  
+  /locations/{id}:
+    delete:
+      tags:
+        - Locations
+      summary: Supprimer une location
+      description: Supprime une location spécifique
+      operationId: destroyLocation
+      parameters:
+        - name: id
+          in: path
+          description: ID de la location à supprimer
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '302':
+          description: Redirection vers la page d'index du dashboard des locations
+        '404':
+          description: Location non trouvée
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+
+components:
+  schemas:
+    Location:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 1
+        name:
+          type: string
+          example: "Seine"
+        description:
+          type: string
+          example: "Fleuve traversant Paris"
+        category:
+          type: string
+          enum: [Rivière, Ruisseau, Fleuve]
+          example: "Fleuve"
+        latitude:
+          type: number
+          format: float
+          example: 48.8566
+        longitude:
+          type: number
+          format: float
+          example: 2.3522
+        is_featured:
+          type: boolean
+          example: true
+        team_id:
+          type: integer
+          format: int64
+          example: 5
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+    
+    ValidationError:
+      type: object
+      properties:
+        message:
+          type: string
+          example: "The given data was invalid."
+        errors:
+          type: object
+          additionalProperties:
+            type: array
+            items:
+              type: string
+          example:
+            name: ["The name field is required."]
+            category: ["The selected category is invalid."]
+  
+  responses:
+    Unauthorized:
+      description: Non authentifié
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                example: "Unauthenticated."
+    
+    Forbidden:
+      description: Accès interdit
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                example: "You are not authorized to access this resource."
